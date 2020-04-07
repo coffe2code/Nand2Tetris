@@ -1,2 +1,2 @@
-scanner: scan.c main.c
-	cc -o scanner -g scan.c main.c
+Assembler: scan.c main.c parser.c
+	cc -o Assembler -g scan.c parser.c main.c 

@@ -57,7 +57,7 @@ void scanline(int character) {
 		i+=1;
 	}
 
-	*(CurrCommand.ComText+i) = '\0';
+	*(CurrCommand.ComText+i-1) = '\0';
 
 }
 
