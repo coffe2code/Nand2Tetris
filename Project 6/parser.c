@@ -372,7 +372,6 @@ void parse(void) {
 			parseCcom();
 			break;
 		case(L_COMMAND):
-			CurrBinary[0] = 1;
 			break;
 	}
 }

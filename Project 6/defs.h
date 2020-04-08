@@ -12,3 +12,10 @@ struct Command {
 	int ComVal;
 	char* ComText;
 };
+
+struct sym {
+	char* symbol;
+	int RamPos;
+
+};
+

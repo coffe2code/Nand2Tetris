@@ -8,9 +8,6 @@ int next(void)
 
 	character = fgetc(Infile);
 
-	if(character == '\n')
-		ROM++;
-
 	return character;
 }
 
@@ -30,7 +27,6 @@ int skip(void)
 
 int scanint(int c) {
 	int val = 0;
-	c = next(); 
 	while(isdigit(c))
 	{
 		val = (val*10) + (c-48);
@@ -41,9 +37,8 @@ int scanint(int c) {
 }
 
 void scanline(int character) {
-	
-	(CurrCommand.ComText) = malloc( sizeof( char ) );
-	*(CurrCommand.ComText) = '\0';
+
+	(CurrCommand.ComText) = malloc( 100*sizeof( char ) );
 	*(CurrCommand.ComText) = character;
 	
 	int i = 1;
@@ -63,29 +58,71 @@ void scanline(int character) {
 
 int advance(void)
 {
-
 	int c;
 
 	c = skip();
 
 	switch(c) {
-
 		case EOF:
 			return 0;
 			break;
 		case '@':
 			CurrCommand.ComType = A_COMMAND;
-			CurrCommand.ComVal		 = scanint(c);
+			c = next();
+			
+			if(isdigit(c)) {
+
+				CurrCommand.ComVal = scanint(c);
+			}
+			else {
+				scanline(c);
+				
+				if(!isPrimScan) {
+
+					if(findglob(CurrCommand.ComText) == -1) {
+						
+						addglob(CurrCommand.ComText, CurrRAM);
+
+						CurrCommand.ComVal = CurrRAM;
+
+						CurrRAM++;
+					}
+					else {
+						
+						CurrCommand.ComVal = GSym[findglob(CurrCommand.ComText)].RamPos;
+					}
+				}
+
+			}
 			break;
 		case '(':
 			CurrCommand.ComType = L_COMMAND;
+			c = next();
 			scanline(c);
+			int len = strlen(CurrCommand.ComText);
+			*(CurrCommand.ComText+len-1) = '\0';
+
+			if(isPrimScan) {
+
+				addglob(CurrCommand.ComText, ROM);
+			}
+			ROM--;
+
 			break;
 		default:
-			CurrCommand.ComType = C_COMMAND;
-			scanline(c);
-			break;
+			if(!isPrimScan) {
+				
+				CurrCommand.ComType = C_COMMAND;
+				scanline(c);
+				break;	
+			}
+			else {
+				scanline(c);
+			}
+			
 	}
+	
+	ROM++;
 
 	return 1;
 }
