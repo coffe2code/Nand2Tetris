@@ -66,6 +66,13 @@ char* scanline(int character) {
 	return buffer;	
 }
 
+void nextline(int character) {
+
+	int c = character;
+	while(fgetc(Infile) != '\n') {
+	}
+}
+
 int advance(void)
 {
 
@@ -180,6 +187,15 @@ int advance(void)
 			temp = scanline(c);
 
 			break;
+
+		case '/':
+
+			c = skip();
+			if(c == '/') {
+
+				nextline(c);
+			}
+
 
 		default:
 			CurrCommand.ComType = C_ARITHMETIC;
